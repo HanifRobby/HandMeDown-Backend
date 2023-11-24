@@ -9,17 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// func Routes() {
-// 	route := gin.Default()
-
-// 	config := cors.DefaultConfig()
-// 	config.AllowOrigins = []string{os.Getenv("CLIENT_ORIGIN")}
-// 	route.Use(cors.New(config))
-
-// 	route.GET("handmedown/products", controllers.GetAllProducts)
-
-// }
-
 // SetRoutes mengatur semua rute
 func SetRoutes(db *gorm.DB) *gin.Engine {
 	route := gin.Default()
@@ -28,13 +17,10 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	config.AllowOrigins = []string{os.Getenv("CLIENT_ORIGIN")}
 	route.Use(cors.New(config))
 
-	// Menambahkan middleware yang menginjeksi DB ke setiap pengendali
-	route.Use(func(c *gin.Context) {
-		c.Set("db", db)
-		c.Next()
-	})
+	route.POST("/login", controllers.LoginHandler)
+	route.GET("/products", controllers.GetAllProducts)
 
-	route.GET("/handmedown/products", controllers.GetAllProducts)
+	// route.GET("/profile", middleware.AuthMiddleware(), controller)
 
 	return route
 }

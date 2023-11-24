@@ -11,5 +11,6 @@ type Barang struct {
 	Deskripsi  string
 	Terjual    bool
 	PenjualID  uint
+	URLGambar  string
 	Penjual    User `gorm:"foreignKey:PenjualID"`
 }
