@@ -1,5 +1,3 @@
-// authMiddleware.go
-
 package middleware
 
 import (

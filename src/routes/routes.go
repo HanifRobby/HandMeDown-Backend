@@ -18,7 +18,10 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	route.Use(cors.New(config))
 
 	route.POST("/login", controllers.LoginHandler)
+	route.POST("/register", controllers.RegisterHandler)
 	route.GET("/products", controllers.GetAllProducts)
+
+	route.GET("/users", controllers.GetAllUser)
 
 	// route.GET("/profile", middleware.AuthMiddleware(), controller)
 
