@@ -78,37 +78,8 @@ var requestAddCartItem struct {
 }
 
 func AddToCart(c *gin.Context) {
-	// userID, exists := c.Get("userID")
-	// if !exists {
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-	// 	return
-	// }
 
-	// // Konversi userID ke uint
-	// userIDUint, ok := userID.(uint)
-	// if !ok {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid userID type"})
-	// 	return
-	// }
-
-	// // Query untuk mendapatkan keranjang berdasarkan userID
-	// var keranjang models.Keranjang
-	// if err := config.DB.Where("user_id = ?", userIDUint).First(&keranjang).Error; err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting user's cart"})
-	// 	return
-	// }
-
-	// if err := c.ShouldBindJSON(&requestAddCartItem); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
-	// 	return
-	// }
-
-	// Dapatkan data barang yang akan ditambahkan dari permintaan
-	var request struct {
-		ProductID uint `json:"product_id"`
-	}
-
-	if err := c.ShouldBindJSON(&request); err != nil {
+	if err := c.ShouldBindJSON(&requestAddCartItem); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
 	}
@@ -141,7 +112,7 @@ func AddToCart(c *gin.Context) {
 	// Tambahkan barang ke keranjang_barang
 	cartItem := models.KeranjangBarang{
 		KeranjangID: cart.ID,
-		BarangID:    request.ProductID,
+		BarangID:    requestAddCartItem.ProductID,
 	}
 
 	if err := config.DB.Create(&cartItem).Error; err != nil {
