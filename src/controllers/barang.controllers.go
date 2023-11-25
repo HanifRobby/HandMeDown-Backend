@@ -99,8 +99,6 @@ func GetProductDetail(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"status":  "200",
-		"message": "Success",
-		"data":    productResponse,
+		"data": productResponse,
 	})
 }

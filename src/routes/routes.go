@@ -26,10 +26,9 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	route.GET("/product-details/:id", controllers.GetProductDetail)
 	route.POST("/add-to-cart", middleware.AuthorizationMiddleware(), controllers.AddToCart)
 	route.GET("/cart", middleware.AuthorizationMiddleware(), controllers.GetCart)
+	route.GET("/profile", middleware.AuthorizationMiddleware(), controllers.GetProfile)
 
 	route.GET("/users", controllers.GetAllUser)
-
-	// route.GET("/profile", middleware.AuthMiddleware(), controller)
 
 	return route
 }

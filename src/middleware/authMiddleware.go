@@ -67,7 +67,7 @@ func AuthorizationMiddleware() gin.HandlerFunc {
 
 		// Set claims dalam konteks untuk digunakan oleh handler selanjutnya jika diperlukan
 		c.Set("claims", claims)
-		fmt.Println("UserID in AuthorizationMiddleware:", claims.UserID)
+		// fmt.Println("UserID in AuthorizationMiddleware:", claims.UserID)
 		c.Set("userID", claims.UserID)
 
 		c.Next()
