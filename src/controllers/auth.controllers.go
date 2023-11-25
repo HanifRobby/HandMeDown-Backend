@@ -4,7 +4,6 @@ import (
 	"handmedown-backend/src/config"
 	"handmedown-backend/src/models"
 	"net/http"
-	"strconv"
 
 	"handmedown-backend/src/middleware"
 
@@ -66,7 +65,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// Create JWT token
-	tokenString, err := middleware.CreateToken(credentials.Username, strconv.Itoa(int(akun.UserID)))
+	tokenString, err := middleware.CreateToken(credentials.Username, akun.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 		return

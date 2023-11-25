@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -14,7 +15,7 @@ var secretKey = []byte("your-secret-key")
 // CustomClaims is a custom structure for JWT claims
 type CustomClaims struct {
 	Username string `json:"username"`
-	UserID   string `json:"userID"`
+	UserID   uint   `json:"userID"`
 	jwt.StandardClaims
 }
 
@@ -38,29 +39,44 @@ func ExtractUserInfoFromToken(tokenString string) (*CustomClaims, error) {
 
 func AuthorizationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		claims, exists := c.Get("claims")
-		if !exists {
+		authHeader := c.GetHeader("Authorization")
+
+		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
 		}
 
-		// Pengecekan otorisasi
-		username := claims.(CustomClaims).Username
-		userID := claims.(CustomClaims).UserID
-		// Lakukan pengecekan otorisasi sesuai kebutuhan aplikasi
+		// Memeriksa apakah header "Authorization" memiliki skema "Bearer"
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: Invalid token format"})
+			c.Abort()
+			return
+		}
 
-		// Set Username dan UserID dalam context untuk digunakan oleh handler selanjutnya
-		c.Set("username", username)
-		c.Set("userID", userID)
+		// Mendapatkan token setelah skema "Bearer"
+		tokenString := authHeader[7:]
+
+		// Ekstrak informasi pengguna dari token
+		claims, err := ExtractUserInfoFromToken(tokenString)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			c.Abort()
+			return
+		}
+
+		// Set claims dalam konteks untuk digunakan oleh handler selanjutnya jika diperlukan
+		c.Set("claims", claims)
+		fmt.Println("UserID in AuthorizationMiddleware:", claims.UserID)
+		c.Set("userID", claims.UserID)
 
 		c.Next()
 	}
 }
 
 // CreateToken generates a new JWT token
-func CreateToken(username string, userID string) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
+func CreateToken(username string, userID uint) (string, error) {
+	expirationTime := time.Now().Add(30 * time.Minute)
 	claims := &CustomClaims{
 		Username: username,
 		UserID:   userID,

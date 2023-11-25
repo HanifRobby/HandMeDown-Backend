@@ -16,12 +16,15 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{os.Getenv("CLIENT_ORIGIN")}
+	config.AllowMethods = []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"}
+	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	route.Use(cors.New(config))
 
 	route.POST("/login", controllers.LoginHandler)
 	route.POST("/register", controllers.RegisterHandler)
-	route.GET("/products", middleware.AuthorizationMiddleware(), controllers.GetAllProducts)
+	route.GET("/products", controllers.GetAllProducts)
 	route.GET("/product-details/:id", controllers.GetProductDetail)
+	route.GET("/cart", middleware.AuthorizationMiddleware(), controllers.GetCart)
 
 	route.GET("/users", controllers.GetAllUser)
 
