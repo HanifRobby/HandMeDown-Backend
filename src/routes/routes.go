@@ -2,6 +2,7 @@ package routes
 
 import (
 	"handmedown-backend/src/controllers"
+	"handmedown-backend/src/middleware"
 	"os"
 
 	"github.com/gin-contrib/cors"
@@ -19,7 +20,8 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 
 	route.POST("/login", controllers.LoginHandler)
 	route.POST("/register", controllers.RegisterHandler)
-	route.GET("/products", controllers.GetAllProducts)
+	route.GET("/products", middleware.AuthorizationMiddleware(), controllers.GetAllProducts)
+	route.GET("/product-details/:id", controllers.GetProductDetail)
 
 	route.GET("/users", controllers.GetAllUser)
 

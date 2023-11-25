@@ -14,36 +14,11 @@ var secretKey = []byte("your-secret-key")
 // CustomClaims is a custom structure for JWT claims
 type CustomClaims struct {
 	Username string `json:"username"`
+	UserID   string `json:"userID"`
 	jwt.StandardClaims
 }
 
-// AuthMiddleware is a middleware for JWT-based authentication
-func AuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
-		if tokenString == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-
-		// Validate token
-		claims, err := parseToken(tokenString)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
-			return
-		}
-
-		// Set claims in context for further use if needed
-		c.Set("claims", claims)
-
-		c.Next()
-	}
-}
-
-// ParseToken parses and validates a JWT token
-func parseToken(tokenString string) (*CustomClaims, error) {
+func ExtractUserInfoFromToken(tokenString string) (*CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
@@ -53,17 +28,42 @@ func parseToken(tokenString string) (*CustomClaims, error) {
 	}
 
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
+		fmt.Print("Username:", claims.Username)
+		fmt.Print("UserID:", claims.UserID)
 		return claims, nil
 	}
 
 	return nil, fmt.Errorf("invalid token")
 }
 
+func AuthorizationMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		claims, exists := c.Get("claims")
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			c.Abort()
+			return
+		}
+
+		// Pengecekan otorisasi
+		username := claims.(CustomClaims).Username
+		userID := claims.(CustomClaims).UserID
+		// Lakukan pengecekan otorisasi sesuai kebutuhan aplikasi
+
+		// Set Username dan UserID dalam context untuk digunakan oleh handler selanjutnya
+		c.Set("username", username)
+		c.Set("userID", userID)
+
+		c.Next()
+	}
+}
+
 // CreateToken generates a new JWT token
-func CreateToken(username string) (string, error) {
+func CreateToken(username string, userID string) (string, error) {
 	expirationTime := time.Now().Add(5 * time.Minute)
 	claims := &CustomClaims{
 		Username: username,
+		UserID:   userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
