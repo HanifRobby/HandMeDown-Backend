@@ -20,12 +20,20 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	route.Use(cors.New(config))
 
+	// Login Register routes
 	route.POST("/login", controllers.LoginHandler)
 	route.POST("/register", controllers.RegisterHandler)
+
+	// Product routes
 	route.GET("/products", controllers.GetAllProducts)
 	route.GET("/product-details/:id", controllers.GetProductDetail)
-	route.POST("/add-to-cart", middleware.AuthorizationMiddleware(), controllers.AddToCart)
+
+	// Cart routes
+	route.POST("/cart", middleware.AuthorizationMiddleware(), controllers.AddToCart)
 	route.GET("/cart", middleware.AuthorizationMiddleware(), controllers.GetCart)
+	route.DELETE("/cart", middleware.AuthorizationMiddleware(), controllers.DeleteCartItem)
+
+	// Profile routes
 	route.GET("/profile", middleware.AuthorizationMiddleware(), controllers.GetProfile)
 
 	route.GET("/users", controllers.GetAllUser)
