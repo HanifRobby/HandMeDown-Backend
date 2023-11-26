@@ -16,7 +16,7 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{os.Getenv("CLIENT_ORIGIN")}
-	config.AllowMethods = []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"}
+	config.AllowMethods = []string{"GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"}
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	route.Use(cors.New(config))
 
@@ -35,6 +35,7 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 
 	// Profile routes
 	route.GET("/profile", middleware.AuthorizationMiddleware(), controllers.GetProfile)
+	route.PATCH("/profile", middleware.AuthorizationMiddleware(), controllers.UpdateProfile)
 
 	route.GET("/users", controllers.GetAllUser)
 
