@@ -36,6 +36,7 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	// Profile routes
 	route.GET("/profile", middleware.AuthorizationMiddleware(), controllers.GetProfile)
 	route.PATCH("/profile", middleware.AuthorizationMiddleware(), controllers.UpdateProfile)
+	route.GET("/profile/:id", controllers.GetUserProfile)
 
 	route.GET("/users", controllers.GetAllUser)
 
