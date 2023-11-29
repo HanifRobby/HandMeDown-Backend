@@ -102,3 +102,49 @@ func GetProductDetail(context *gin.Context) {
 		"data": productResponse,
 	})
 }
+
+type UserProductResponse struct {
+	ID          uint    `json:"ID"`
+	NamaBarang  string  `json:"NamaBarang"`
+	Harga       float64 `json:"Harga"`
+	Terjual     bool    `json:"Terjual"`
+	URLGambar   string  `json:"URLGambar"`
+	PenjualID   uint    `json:"PenjualID"`
+	NamaPenjual string  `json:"NamaPenjual"`
+}
+
+func GetUserProducts(context *gin.Context) {
+	db := config.DB
+
+	userID, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// Query untuk mendapatkan barang yang dijual oleh penjual
+	var barangJual []models.Barang
+	err = db.Where("penjual_id = ?", userID).Find(&barangJual).Error
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching seller's products"})
+		return
+	}
+
+	// Membuat slice untuk menyimpan data produk
+	var userProductResponses []UserProductResponse
+
+	// Mengisi data barang yang dijual oleh penjual
+	for _, barang := range barangJual {
+		userProductResponses = append(userProductResponses, UserProductResponse{
+			ID:          barang.ID,
+			NamaBarang:  barang.NamaBarang,
+			Harga:       barang.Harga,
+			Terjual:     barang.Terjual,
+			URLGambar:   barang.URLGambar,
+			PenjualID:   barang.PenjualID,
+			NamaPenjual: barang.Penjual.Nama,
+		})
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": userProductResponses})
+}

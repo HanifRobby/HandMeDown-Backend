@@ -119,11 +119,11 @@ func UpdateProfile(context *gin.Context) {
 }
 
 type ResponseUserProfile struct {
-	Nama       string                  `json:"nama"`
-	Email      string                  `json:"email"`
-	NoTelp     string                  `json:"no_telp"`
-	Alamat     string                  `json:"alamat"`
-	BarangJual []ProductDetailResponse `json:"barang_jual"`
+	Nama   string `json:"nama"`
+	Email  string `json:"email"`
+	NoTelp string `json:"no_telp"`
+	Alamat string `json:"alamat"`
+	// BarangJual []ProductDetailResponse `json:"barang_jual"`
 }
 
 func GetUserProfile(context *gin.Context) {
@@ -145,34 +145,34 @@ func GetUserProfile(context *gin.Context) {
 	}
 
 	// Query untuk mendapatkan barang yang dijual oleh penjual
-	var barangJual []models.Barang
-	err = db.Where("penjual_id = ?", userID).Find(&barangJual).Error
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching seller's products"})
-		return
-	}
+	// var barangJual []models.Barang
+	// err = db.Where("penjual_id = ?", userID).Find(&barangJual).Error
+	// if err != nil {
+	// 	context.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching seller's products"})
+	// 	return
+	// }
 
 	// Membuat respons HTTP
 	responseUserProfile := ResponseUserProfile{
-		Nama:       user.Nama,
-		Email:      user.Email,
-		NoTelp:     user.NoTelp,
-		Alamat:     user.Alamat,
-		BarangJual: make([]ProductDetailResponse, len(barangJual)),
+		Nama:   user.Nama,
+		Email:  user.Email,
+		NoTelp: user.NoTelp,
+		Alamat: user.Alamat,
+		// BarangJual: make([]ProductDetailResponse, len(barangJual)),
 	}
 
 	// Mengisi data barang yang dijual oleh penjual
-	for i, barang := range barangJual {
-		responseUserProfile.BarangJual[i] = ProductDetailResponse{
-			ID:         barang.ID,
-			NamaBarang: barang.NamaBarang,
-			Harga:      barang.Harga,
-			Deskripsi:  barang.Deskripsi,
-			Terjual:    barang.Terjual,
-			PenjualID:  barang.PenjualID,
-			URLGambar:  barang.URLGambar,
-		}
-	}
+	// for i, barang := range barangJual {
+	// 	responseUserProfile.BarangJual[i] = ProductDetailResponse{
+	// 		ID:         barang.ID,
+	// 		NamaBarang: barang.NamaBarang,
+	// 		Harga:      barang.Harga,
+	// 		Deskripsi:  barang.Deskripsi,
+	// 		Terjual:    barang.Terjual,
+	// 		PenjualID:  barang.PenjualID,
+	// 		URLGambar:  barang.URLGambar,
+	// 	}
+	// }
 
 	context.JSON(http.StatusOK, gin.H{"data": responseUserProfile})
 }
