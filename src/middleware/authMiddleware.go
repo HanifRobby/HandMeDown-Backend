@@ -29,8 +29,6 @@ func ExtractUserInfoFromToken(tokenString string) (*CustomClaims, error) {
 	}
 
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
-		fmt.Print("Username:", claims.Username)
-		fmt.Print("UserID:", claims.UserID)
 		return claims, nil
 	}
 
