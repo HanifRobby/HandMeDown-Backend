@@ -28,6 +28,8 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	route.GET("/products", controllers.GetAllProducts)
 	route.GET("/product-details/:id", controllers.GetProductDetail)
 	route.GET("/user-products/:id", controllers.GetUserProducts)
+	route.GET("/products/search/", controllers.GetAllProducts)
+	route.GET("/products/search/:name", controllers.GetProductsByName)
 
 	// Cart routes
 	route.POST("/cart", middleware.AuthorizationMiddleware(), controllers.AddToCart)
@@ -38,6 +40,9 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	route.GET("/profile", middleware.AuthorizationMiddleware(), controllers.GetProfile)
 	route.PATCH("/profile", middleware.AuthorizationMiddleware(), controllers.UpdateProfile)
 	route.GET("/profile/:id", controllers.GetUserProfile)
+
+	// Orderlist
+	route.GET("/orderlist", middleware.AuthorizationMiddleware(), controllers.GetOrderList)
 
 	route.GET("/users", controllers.GetAllUser)
 

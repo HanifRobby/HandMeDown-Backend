@@ -47,9 +47,7 @@ func GetAllProducts(context *gin.Context) {
 
 	// Creating HTTP Response
 	context.JSON(http.StatusOK, gin.H{
-		"status":  "200",
-		"message": "Success",
-		"data":    productResponses,
+		"data": productResponses,
 	})
 }
 
@@ -147,4 +145,37 @@ func GetUserProducts(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{"data": userProductResponses})
+}
+
+func GetProductsByName(context *gin.Context) {
+	db := config.DB
+
+	productName := context.Param("name")
+
+	var products []models.Barang
+
+	// Query untuk mencari data produk dengan nama yang mengandung pola productName
+	err := db.Preload("Penjual").Where("nama_barang LIKE ?", "%"+productName+"%").Find(&products)
+	if err.Error != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Error getting data"})
+		return
+	}
+
+	var productResponses []ProductResponse
+	for _, product := range products {
+		productResponses = append(productResponses, ProductResponse{
+			ID:          product.ID,
+			NamaBarang:  product.NamaBarang,
+			Harga:       product.Harga,
+			Terjual:     product.Terjual,
+			PenjualID:   product.PenjualID,
+			URLGambar:   product.URLGambar,
+			NamaPenjual: product.Penjual.Nama,
+		})
+	}
+
+	// Creating HTTP Response
+	context.JSON(http.StatusOK, gin.H{
+		"data": productResponses,
+	})
 }

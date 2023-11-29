@@ -144,14 +144,6 @@ func GetUserProfile(context *gin.Context) {
 		return
 	}
 
-	// Query untuk mendapatkan barang yang dijual oleh penjual
-	// var barangJual []models.Barang
-	// err = db.Where("penjual_id = ?", userID).Find(&barangJual).Error
-	// if err != nil {
-	// 	context.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching seller's products"})
-	// 	return
-	// }
-
 	// Membuat respons HTTP
 	responseUserProfile := ResponseUserProfile{
 		Nama:   user.Nama,
@@ -160,19 +152,6 @@ func GetUserProfile(context *gin.Context) {
 		Alamat: user.Alamat,
 		// BarangJual: make([]ProductDetailResponse, len(barangJual)),
 	}
-
-	// Mengisi data barang yang dijual oleh penjual
-	// for i, barang := range barangJual {
-	// 	responseUserProfile.BarangJual[i] = ProductDetailResponse{
-	// 		ID:         barang.ID,
-	// 		NamaBarang: barang.NamaBarang,
-	// 		Harga:      barang.Harga,
-	// 		Deskripsi:  barang.Deskripsi,
-	// 		Terjual:    barang.Terjual,
-	// 		PenjualID:  barang.PenjualID,
-	// 		URLGambar:  barang.URLGambar,
-	// 	}
-	// }
 
 	context.JSON(http.StatusOK, gin.H{"data": responseUserProfile})
 }
