@@ -1,3 +1,5 @@
-﻿# HandMeDown Back-end
+# HandMeDown (Projek Akhir RPL)
 
- Backend untuk project akhir RPL
+Merupakan project backend yang dibuat untuk menyelesaikan mata kuliah Rekayasa Perangkat Lunak. HandMeDown adalah platform untuk jual beli barang bekas antar mahasiswa.
+
+Tech Stack : Golang + GIN (Framework) + GORM (ORM)
