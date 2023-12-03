@@ -3,7 +3,6 @@ package routes
 import (
 	"handmedown-backend/src/controllers"
 	"handmedown-backend/src/middleware"
-	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -15,7 +14,7 @@ func SetRoutes(db *gorm.DB) *gin.Engine {
 	route := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{os.Getenv("CLIENT_ORIGIN")}
+	config.AllowOrigins = []string{"*"}
 	config.AllowMethods = []string{"GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"}
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	route.Use(cors.New(config))
