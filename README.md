@@ -6,7 +6,7 @@ Tech Stack : Golang + GIN (Framework) + GORM (ORM)
 
 Kelompok 8
 
-Windy Indriandra Marsha /t/t/t(215150200111058) <br>
+Windy Indriandra Marsha         (215150200111058) <br>
 Revaldo Gemino Kantana Sagala   (215150200111066) <br>
 Hanif Robby Rodhiya             (215150207111083) <br>
 Roenrico Jobel                  (215150207111087) <br>
